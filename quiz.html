@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strona szkoleniowa</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="menu">
+        <h1>Wybierz opcję:</h1>
+        <button onclick="startQuiz('all')">Wszystkie pytania</button>
+        <button onclick="startQuiz('1-10')">Pytania 1-10</button>
+        <button onclick="startQuiz('11-20')">Pytania 11-20</button>
+        <button onclick="startQuiz('21-30')">Pytania 21-30</button>
+        <button onclick="startQuiz('31-40')">Pytania 31-40</button>
+        <button onclick="startQuiz('41-50')">Pytania 41-50</button>
+        <button onclick="startQuiz('51-60')">Pytania 51-60</button>
+        <button onclick="startQuiz('61-70')">Pytania 61-70</button>
+        <button onclick="startQuiz('71-80')">Pytania 71-80</button>
+        <button onclick="startQuiz('81-90')">Pytania 81-90</button>
+        <button onclick="startQuiz('91-100')">Pytania 91-100</button>
+        <button onclick="startQuiz('101-110')">Pytania 101-110</button>
+        <button onclick="startQuiz('111-120')">Pytania 111-120</button>
+        <button onclick="startQuiz('121-130')">Pytania 121-130</button>
+        <button onclick="startQuiz('131-140')">Pytania 131-140</button>
+        <button onclick="startQuiz('141-150')">Pytania 141-150</button>
+        <button onclick="startQuiz('151-160')">Pytania 151-160</button>
+        <button onclick="startQuiz('161-170')">Pytania 161-170</button>
+        <button onclick="startQuiz('171-180')">Pytania 171-180</button>
+        <button onclick="startQuiz('181-190')">Pytania 181-190</button>
+        <button onclick="startQuiz('191-200')">Pytania 191-200</button>
+        <button onclick="startQuiz('random-20')">20 losowych pytań</button>
+    </div>
+    <div id="quiz" style="display:none;">
+        <div id="question-container"></div>
+        <button id="next-button" onclick="nextQuestion()">Przejdź do kolejnego pytania</button>
+    </div>
+    <div id="result" style="display:none;"></div>
+
+    <script>
+        let questions = [];
+        let filteredQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedAnswers = [];
+
+        // fetch('questions.json')
+        fetch('http://localhost:8080/questions.json')
+            .then(response => response.json())
+            .then(data => {
+                questions = data.questions;
+                document.getElementById('menu').style.display = 'block';
+            })
+            .catch(error => {
+                alert('Błąd podczas ładowania pytań: ' + error);
+            });
+
+        function startQuiz(option) {
+            if (questions.length === 0) {
+                alert('Pytania nie zostały jeszcze załadowane. Spróbuj ponownie za chwilę.');
+                return;
+            }
+
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+
+            if (option === 'all') {
+                filteredQuestions = questions;
+            } else if (option === '1-10') {
+                filteredQuestions = questions.slice(0, 10);
+            } else if (option === '11-20') {
+                filteredQuestions = questions.slice(10, 20);
+            } else if (option === '21-30') {
+                filteredQuestions = questions.slice(20, 30);
+            } else if (option === '31-40') {
+                filteredQuestions = questions.slice(30, 40);
+            } else if (option === '41-50') {
+                filteredQuestions = questions.slice(40, 50);
+            } else if (option === '51-60') {
+                filteredQuestions = questions.slice(50, 60);
+            } else if (option === '61-70') {
+                filteredQuestions = questions.slice(60, 70);
+            } else if (option === '71-80') {
+                filteredQuestions = questions.slice(70, 80);
+            } else if (option === '81-90') {
+                filteredQuestions = questions.slice(80, 90);
+            } else if (option === '91-100') {
+                filteredQuestions = questions.slice(90, 100);
+            } else if (option === '101-110') {
+                filteredQuestions = questions.slice(100, 110);
+            } else if (option === '111-120') {
+                filteredQuestions = questions.slice(110, 120);
+            } else if (option === '121-130') {
+                filteredQuestions = questions.slice(120, 130);
+            } else if (option === '131-140') {
+                filteredQuestions = questions.slice(130, 140);
+            } else if (option === '141-150') {
+                filteredQuestions = questions.slice(140, 150);
+            } else if (option === '151-160') {
+                filteredQuestions = questions.slice(150, 160);
+            } else if (option === '161-170') {
+                filteredQuestions = questions.slice(160, 170);
+            } else if (option === '171-180') {
+                filteredQuestions = questions.slice(170, 180);
+            } else if (option === '181-190') {
+                filteredQuestions = questions.slice(180, 190);
+            } else if (option === '191-200') {
+                filteredQuestions = questions.slice(190, 200);
+            } else if (option === 'random-20') {
+                filteredQuestions = questions.slice().sort(() => 0.5 - Math.random()).slice(0, 20);
+            }
+
+            currentQuestionIndex = 0;
+            score = 0;
+            selectedAnswers = [];
+
+            if (filteredQuestions.length > 0) {
+                showQuestion();
+            } else {
+                alert('Brak pytań do wyświetlenia.');
+                document.getElementById('menu').style.display = 'block';
+                document.getElementById('quiz').style.display = 'none';
+            }
+        }
+
+        function showQuestion() {
+            if (currentQuestionIndex < filteredQuestions.length) {
+                const question = filteredQuestions[currentQuestionIndex];
+                const questionContainer = document.getElementById('question-container');
+                questionContainer.innerHTML = `
+                    <h2>Pytanie ${currentQuestionIndex + 1}: ${question.question}</h2>
+                    <div>
+                        ${question.answers.map((answer, index) => `
+                            <label>
+                                <input type="radio" name="answer" value="${index}">
+                                ${answer.label}. ${answer.text}
+                            </label><br>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                showResult();
+            }
+        }
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                const selectedAnswerIndex = parseInt(selectedOption.value);
+                const correctAnswerIndex = filteredQuestions[currentQuestionIndex].answers.findIndex(answer => answer.is_correct);
+
+                selectedAnswers.push({
+                    question: filteredQuestions[currentQuestionIndex].question,
+                    selectedAnswer: selectedAnswerIndex,
+                    correctAnswer: correctAnswerIndex
+                });
+
+                if (selectedAnswerIndex === correctAnswerIndex) {
+                    score++;
+                }
+
+                currentQuestionIndex++;
+                showQuestion();
+            } else {
+                alert('Wybierz odpowiedź, zanim przejdziesz do kolejnego pytania.');
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz').style.display = 'none';
+            const resultContainer = document.getElementById('result');
+            resultContainer.style.display = 'block';
+            resultContainer.innerHTML = `<h2>Twój wynik: ${score}/${filteredQuestions.length}</h2>`;
+
+            if (score >= 18) {
+                resultContainer.innerHTML += `<p>Zdane!</p>`;
+            } else {
+                resultContainer.innerHTML += `<p>Niezdane.</p>`;
+            }
+
+            resultContainer.innerHTML += '<h3>Raport:</h3><ul>';
+            selectedAnswers.forEach((item, index) => {
+                resultContainer.innerHTML += `
+                    <li>
+                        <p>Pytanie ${index + 1}: ${item.question}</p>
+                        <p>Twoja odpowiedź: <span style="color: ${item.selectedAnswer === item.correctAnswer ? 'green' : 'red'};">${filteredQuestions[index].answers[item.selectedAnswer].label}. ${filteredQuestions[index].answers[item.selectedAnswer].text}</span></p>
+                        ${item.selectedAnswer !== item.correctAnswer ? `<p>Prawidłowa odpowiedź to: ${filteredQuestions[index].answers[item.correctAnswer].label}. ${filteredQuestions[index].answers[item.correctAnswer].text} </p>` : ''}
+                    </li>
+                `;
+            });
+            resultContainer.innerHTML += '</ul>';
+        }
+    </script>
+</body>
+</html>
+
+```aby odpalić
+uruchom serwer http-server --cors
+localhost:8080/quiz.html'''
