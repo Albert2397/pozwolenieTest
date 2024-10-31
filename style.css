@@ -70,3 +70,15 @@ input[type="radio"] {
 #result span {
     font-weight: bold;
 }
+
+#timer {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ff4500; /* Kolor wyróżniający */
+    background-color: #fff7e6; /* Jasne tło */
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+}

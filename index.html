@@ -33,6 +33,7 @@
         <button onclick="startQuiz('random-20')">20 losowych pytań</button>
     </div>
     <div id="quiz" style="display:none;">
+        <div id="countdown-timer"></div>
         <div id="question-container"></div>
         <button id="next-button" onclick="nextQuestion()">Przejdź do kolejnego pytania</button>
     </div>
@@ -110,6 +111,7 @@
                 filteredQuestions = questions.slice(190, 200);
             } else if (option === 'random-20') {
                 filteredQuestions = questions.slice().sort(() => 0.5 - Math.random()).slice(0, 20);
+                startCountdown(0.5);
             }
 
             currentQuestionIndex = 0;
@@ -166,6 +168,29 @@
             } else {
                 alert('Wybierz odpowiedź, zanim przejdziesz do kolejnego pytania.');
             }
+        }
+        
+        function startCountdown(minutes) {
+            let time = minutes * 60;
+            const countdownElement = document.createElement('div');
+            countdownElement.id = 'timer';
+            const quizElement = document.getElementById('quiz');
+            quizElement.insertBefore(countdownElement, document.getElementById('question-container'));
+
+            timerInterval = setInterval(() => {
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+
+            countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            if (time <= 0) {
+                clearInterval(timerInterval);
+                alert('Czas minął!');
+                showResult();
+            } else {
+                time--;
+            }
+            }, 1000);
         }
 
         function showResult() {
