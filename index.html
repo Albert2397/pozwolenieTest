@@ -111,7 +111,7 @@
                 filteredQuestions = questions.slice(190, 200);
             } else if (option === 'random-20') {
                 filteredQuestions = questions.slice().sort(() => 0.5 - Math.random()).slice(0, 20);
-                startCountdown(0.5);
+                startCountdown(30);
             }
 
             currentQuestionIndex = 0;
@@ -169,7 +169,7 @@
                 alert('Wybierz odpowiedź, zanim przejdziesz do kolejnego pytania.');
             }
         }
-        
+
         function startCountdown(minutes) {
             let time = minutes * 60;
             const countdownElement = document.createElement('div');
