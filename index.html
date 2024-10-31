@@ -132,7 +132,7 @@
                 const question = filteredQuestions[currentQuestionIndex];
                 const questionContainer = document.getElementById('question-container');
                 questionContainer.innerHTML = `
-                    <h2>Pytanie ${currentQuestionIndex + 1}: ${question.question}</h2>
+                    <h2>Pytanie ${currentQuestionIndex + 1}/${filteredQuestions.length}: ${question.question}</h2>
                     <div>
                         ${question.answers.map((answer, index) => `
                             <label>
@@ -199,10 +199,10 @@
             resultContainer.style.display = 'block';
             resultContainer.innerHTML = `<h2>Twój wynik: ${score}/${filteredQuestions.length}</h2>`;
 
-            if (score >= 18) {
-                resultContainer.innerHTML += `<p>Zdane!</p>`;
+            if (score / filteredQuestions.length >= 0.9) {
+                resultContainer.innerHTML += `<p style="font-weight: bold; font-size: 1.5em; color: green;">Zdane!</p>`;
             } else {
-                resultContainer.innerHTML += `<p>Niezdane.</p>`;
+                resultContainer.innerHTML += `<p style="font-weight: bold; font-size: 1.5em; color: red;">Niezdane!</p>`;
             }
 
             resultContainer.innerHTML += '<h3>Raport:</h3><ul>';
@@ -211,7 +211,7 @@
                     <li>
                         <p>Pytanie ${index + 1}: ${item.question}</p>
                         <p>Twoja odpowiedź: <span style="color: ${item.selectedAnswer === item.correctAnswer ? 'green' : 'red'};">${filteredQuestions[index].answers[item.selectedAnswer].label}. ${filteredQuestions[index].answers[item.selectedAnswer].text}</span></p>
-                        ${item.selectedAnswer !== item.correctAnswer ? `<p>Prawidłowa odpowiedź to: ${filteredQuestions[index].answers[item.correctAnswer].label}. ${filteredQuestions[index].answers[item.correctAnswer].text} </p>` : ''}
+                        ${item.selectedAnswer !== item.correctAnswer ? `<p>Prawidłowa odpowiedź to: <span style="color: green;""> ${filteredQuestions[index].answers[item.correctAnswer].label}. ${filteredQuestions[index].answers[item.correctAnswer].text} </span></p>` : ''}
                     </li>
                 `;
             });
