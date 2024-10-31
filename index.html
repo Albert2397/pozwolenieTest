@@ -45,9 +45,9 @@
         let score = 0;
         let selectedAnswers = [];
 
-        // fetch('questions.json')
-        fetch('Albert2397/pozwolenieTest/questions.json')
+        // fetch('Albert2397/pozwolenieTest/questions.json')
         // fetch('http://localhost:8080/questions.json')
+        fetch('questions.json')
             .then(response => response.json())
             .then(data => {
                 questions = data.questions;
