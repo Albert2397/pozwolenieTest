@@ -5,6 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strona szkoleniowa</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Ustawienie stylu stopki, aby znajdowała się na dole zawartości */
+        #menu, #quiz, #result {
+            padding-bottom: 50px; /* Dodatkowa przestrzeń nad stopką */
+        }
+        footer {
+            text-align: center;
+            padding: 1em;
+            background-color: #f1f1f1;
+            font-size: 0.9em;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
 </head>
 <body>
     <div id="menu">
@@ -38,6 +54,10 @@
         <button id="next-button" onclick="nextQuestion()">Przejdź do kolejnego pytania</button>
     </div>
     <div id="result" style="display:none;"></div>
+
+    <footer>
+        Created by: Albert Krzywicki &bull; All rights reserved &bull; 2024
+    </footer>
 
     <script>
         let questions = [];
@@ -215,7 +235,6 @@
                     </li>
                 `;
             });
-            resultContainer.innerHTML += '</ul>';
         }
     </script>
 </body>
