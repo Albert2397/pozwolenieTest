@@ -5,6 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strona szkoleniowa</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Ustawienie stylu stopki, aby znajdowała się na dole zawartości */
+        #menu, #quiz, #result {
+            padding-bottom: 50px; /* Dodatkowa przestrzeń nad stopką */
+        }
+        footer {
+            text-align: center;
+            padding: 1em;
+            background-color: #f1f1f1;
+            font-size: 0.9em;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
 </head>
 <body>
     <div id="menu">
@@ -33,10 +49,15 @@
         <button onclick="startQuiz('random-20')">20 losowych pytań</button>
     </div>
     <div id="quiz" style="display:none;">
+        <div id="countdown-timer"></div>
         <div id="question-container"></div>
         <button id="next-button" onclick="nextQuestion()">Przejdź do kolejnego pytania</button>
     </div>
     <div id="result" style="display:none;"></div>
+
+    <footer>
+        Created by: Albert Krzywicki &bull; All rights reserved &bull; 2024
+    </footer>
 
     <script>
         let questions = [];
@@ -110,6 +131,7 @@
                 filteredQuestions = questions.slice(190, 200);
             } else if (option === 'random-20') {
                 filteredQuestions = questions.slice().sort(() => 0.5 - Math.random()).slice(0, 20);
+                startCountdown(30);
             }
 
             currentQuestionIndex = 0;
@@ -130,7 +152,7 @@
                 const question = filteredQuestions[currentQuestionIndex];
                 const questionContainer = document.getElementById('question-container');
                 questionContainer.innerHTML = `
-                    <h2>Pytanie ${currentQuestionIndex + 1}: ${question.question}</h2>
+                    <h2>Pytanie ${currentQuestionIndex + 1}/${filteredQuestions.length}: ${question.question}</h2>
                     <div>
                         ${question.answers.map((answer, index) => `
                             <label>
@@ -168,16 +190,39 @@
             }
         }
 
+        function startCountdown(minutes) {
+            let time = minutes * 60;
+            const countdownElement = document.createElement('div');
+            countdownElement.id = 'timer';
+            const quizElement = document.getElementById('quiz');
+            quizElement.insertBefore(countdownElement, document.getElementById('question-container'));
+
+            timerInterval = setInterval(() => {
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+
+            countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            if (time <= 0) {
+                clearInterval(timerInterval);
+                alert('Czas minął!');
+                showResult();
+            } else {
+                time--;
+            }
+            }, 1000);
+        }
+
         function showResult() {
             document.getElementById('quiz').style.display = 'none';
             const resultContainer = document.getElementById('result');
             resultContainer.style.display = 'block';
             resultContainer.innerHTML = `<h2>Twój wynik: ${score}/${filteredQuestions.length}</h2>`;
 
-            if (score >= 18) {
-                resultContainer.innerHTML += `<p>Zdane!</p>`;
+            if (score / filteredQuestions.length >= 0.9) {
+                resultContainer.innerHTML += `<p style="font-weight: bold; font-size: 1.5em; color: green;">Zdane!</p>`;
             } else {
-                resultContainer.innerHTML += `<p>Niezdane.</p>`;
+                resultContainer.innerHTML += `<p style="font-weight: bold; font-size: 1.5em; color: red;">Niezdane!</p>`;
             }
 
             resultContainer.innerHTML += '<h3>Raport:</h3><ul>';
@@ -186,11 +231,10 @@
                     <li>
                         <p>Pytanie ${index + 1}: ${item.question}</p>
                         <p>Twoja odpowiedź: <span style="color: ${item.selectedAnswer === item.correctAnswer ? 'green' : 'red'};">${filteredQuestions[index].answers[item.selectedAnswer].label}. ${filteredQuestions[index].answers[item.selectedAnswer].text}</span></p>
-                        ${item.selectedAnswer !== item.correctAnswer ? `<p>Prawidłowa odpowiedź to: ${filteredQuestions[index].answers[item.correctAnswer].label}. ${filteredQuestions[index].answers[item.correctAnswer].text} </p>` : ''}
+                        ${item.selectedAnswer !== item.correctAnswer ? `<p>Prawidłowa odpowiedź to: <span style="color: green;""> ${filteredQuestions[index].answers[item.correctAnswer].label}. ${filteredQuestions[index].answers[item.correctAnswer].text} </span></p>` : ''}
                     </li>
                 `;
             });
-            resultContainer.innerHTML += '</ul>';
         }
     </script>
 </body>

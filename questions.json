@@ -643,9 +643,9 @@
         "number": 72,
         "question": "Nabywca broni obowiązany jest ją zarejestrować: (art. 13 ust. 1 uobia)",
         "answers": [
-          { "label": "a", "text": "w ciągu 7 dni od dnia nabycia" , "is_correct": true },
+          { "label": "a", "text": "w ciągu 7 dni od dnia nabycia" , "is_correct": false },
           { "label": "b", "text": "w ciągu 10 dni od dnia nabycia" , "is_correct": false },
-          { "label": "c", "text": "w ciągu 5 dni o dnia nabycia" , "is_correct": false }
+          { "label": "c", "text": "w ciągu 5 dni o dnia nabycia" , "is_correct": true }
         ]
       },
       {
