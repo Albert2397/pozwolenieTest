@@ -53,7 +53,10 @@
         <div id="question-container"></div>
         <button id="next-button" onclick="nextQuestion()">Przejdź do kolejnego pytania</button>
     </div>
-    <div id="result" style="display:none;"></div>
+
+    <div id="result" style="display:none;">
+        <button onclick="returnToMenu()">Powrót do menu głównego</button>
+    </div>
 
     <footer>
         Created by: Albert Krzywicki &bull; All rights reserved &bull; 2024
@@ -66,72 +69,56 @@
         let score = 0;
         let selectedAnswers = [];
 
-        // fetch('Albert2397/pozwolenieTest/questions.json')
-        // fetch('http://localhost:8080/questions.json')
         fetch('questions.json')
             .then(response => response.json())
             .then(data => {
-                questions = data.questions;
-                document.getElementById('menu').style.display = 'block';
+            questions = data.questions;
+            document.getElementById('menu').style.display = 'block';
             })
             .catch(error => {
-                alert('Błąd podczas ładowania pytań: ' + error);
+            alert('Błąd podczas ładowania pytań: ' + error);
             });
 
         function startQuiz(option) {
             if (questions.length === 0) {
-                alert('Pytania nie zostały jeszcze załadowane. Spróbuj ponownie za chwilę.');
-                return;
+            alert('Pytania nie zostały jeszcze załadowane. Spróbuj ponownie za chwilę.');
+            return;
             }
 
             document.getElementById('menu').style.display = 'none';
             document.getElementById('quiz').style.display = 'block';
 
-            if (option === 'all') {
-                filteredQuestions = questions;
-            } else if (option === '1-10') {
-                filteredQuestions = questions.slice(0, 10);
-            } else if (option === '11-20') {
-                filteredQuestions = questions.slice(10, 20);
-            } else if (option === '21-30') {
-                filteredQuestions = questions.slice(20, 30);
-            } else if (option === '31-40') {
-                filteredQuestions = questions.slice(30, 40);
-            } else if (option === '41-50') {
-                filteredQuestions = questions.slice(40, 50);
-            } else if (option === '51-60') {
-                filteredQuestions = questions.slice(50, 60);
-            } else if (option === '61-70') {
-                filteredQuestions = questions.slice(60, 70);
-            } else if (option === '71-80') {
-                filteredQuestions = questions.slice(70, 80);
-            } else if (option === '81-90') {
-                filteredQuestions = questions.slice(80, 90);
-            } else if (option === '91-100') {
-                filteredQuestions = questions.slice(90, 100);
-            } else if (option === '101-110') {
-                filteredQuestions = questions.slice(100, 110);
-            } else if (option === '111-120') {
-                filteredQuestions = questions.slice(110, 120);
-            } else if (option === '121-130') {
-                filteredQuestions = questions.slice(120, 130);
-            } else if (option === '131-140') {
-                filteredQuestions = questions.slice(130, 140);
-            } else if (option === '141-150') {
-                filteredQuestions = questions.slice(140, 150);
-            } else if (option === '151-160') {
-                filteredQuestions = questions.slice(150, 160);
-            } else if (option === '161-170') {
-                filteredQuestions = questions.slice(160, 170);
-            } else if (option === '171-180') {
-                filteredQuestions = questions.slice(170, 180);
-            } else if (option === '181-190') {
-                filteredQuestions = questions.slice(180, 190);
-            } else if (option === '191-200') {
-                filteredQuestions = questions.slice(190, 200);
-            } else if (option === 'random-20') {
-                filteredQuestions = questions.slice().sort(() => 0.5 - Math.random()).slice(0, 20);
-                startCountdown(30);
+            const ranges = {
+            'all': [0, questions.length],
+            '1-10': [0, 10],
+            '11-20': [10, 20],
+            '21-30': [20, 30],
+            '31-40': [30, 40],
+            '41-50': [40, 50],
+            '51-60': [50, 60],
+            '61-70': [60, 70],
+            '71-80': [70, 80],
+            '81-90': [80, 90],
+            '91-100': [90, 100],
+            '101-110': [100, 110],
+            '111-120': [110, 120],
+            '121-130': [120, 130],
+            '131-140': [130, 140],
+            '141-150': [140, 150],
+            '151-160': [150, 160],
+            '161-170': [160, 170],
+            '171-180': [170, 180],
+            '181-190': [180, 190],
+            '191-200': [190, 200],
+            'random-20': 'random-20'
+            };
+
+            if (option === 'random-20') {
+            filteredQuestions = questions.slice().sort(() => 0.5 - Math.random()).slice(0, 20);
+            startCountdown(30);
+            } else {
+            const [start, end] = ranges[option];
+            filteredQuestions = questions.slice(start, end);
             }
 
             currentQuestionIndex = 0;
@@ -139,11 +126,11 @@
             selectedAnswers = [];
 
             if (filteredQuestions.length > 0) {
-                showQuestion();
+            showQuestion();
             } else {
-                alert('Brak pytań do wyświetlenia.');
-                document.getElementById('menu').style.display = 'block';
-                document.getElementById('quiz').style.display = 'none';
+            alert('Brak pytań do wyświetlenia.');
+            document.getElementById('menu').style.display = 'block';
+            document.getElementById('quiz').style.display = 'none';
             }
         }
 
@@ -217,25 +204,36 @@
             document.getElementById('quiz').style.display = 'none';
             const resultContainer = document.getElementById('result');
             resultContainer.style.display = 'block';
-            resultContainer.innerHTML = `<h2>Twój wynik: ${score}/${filteredQuestions.length}</h2>`;
-
-            if (score / filteredQuestions.length >= 0.9) {
-                resultContainer.innerHTML += `<p style="font-weight: bold; font-size: 1.5em; color: green;">Zdane!</p>`;
-            } else {
-                resultContainer.innerHTML += `<p style="font-weight: bold; font-size: 1.5em; color: red;">Niezdane!</p>`;
-            }
-
-            resultContainer.innerHTML += '<h3>Raport:</h3><ul>';
-            selectedAnswers.forEach((item, index) => {
-                resultContainer.innerHTML += `
-                    <li>
-                        <p>Pytanie ${index + 1}: ${item.question}</p>
-                        <p>Twoja odpowiedź: <span style="color: ${item.selectedAnswer === item.correctAnswer ? 'green' : 'red'};">${filteredQuestions[index].answers[item.selectedAnswer].label}. ${filteredQuestions[index].answers[item.selectedAnswer].text}</span></p>
-                        ${item.selectedAnswer !== item.correctAnswer ? `<p>Prawidłowa odpowiedź to: <span style="color: green;""> ${filteredQuestions[index].answers[item.correctAnswer].label}. ${filteredQuestions[index].answers[item.correctAnswer].text} </span></p>` : ''}
-                    </li>
-                `;
-            });
+            resultContainer.innerHTML = `
+            <h2>Twój wynik: ${score}/${filteredQuestions.length}</h2>
+            ${score / filteredQuestions.length >= 0.9 ? 
+                '<p style="font-weight: bold; font-size: 1.5em; color: green;">Zdane!</p>' : 
+                '<p style="font-weight: bold; font-size: 1.5em; color: red;">Niezdane!</p>'}
+            <h3>Raport:</h3><ul>
+            ${selectedAnswers.map((item, index) => `
+                <li>
+                <p>Pytanie ${index + 1}: ${item.question}</p>
+                <p>Twoja odpowiedź: <span style="color: ${item.selectedAnswer === item.correctAnswer ? 'green' : 'red'};">
+                ${filteredQuestions[index].answers[item.selectedAnswer].label}. ${filteredQuestions[index].answers[item.selectedAnswer].text}</span></p>
+                ${item.selectedAnswer !== item.correctAnswer ? `<p>Prawidłowa odpowiedź to: <span style="color: green;">${filteredQuestions[index].answers[item.correctAnswer].label}. ${filteredQuestions[index].answers[item.correctAnswer].text}</span></p>` : ''}
+                </li>
+            `).join('')}
+            </ul>
+            <button onclick="returnToMenu()">Powrót do menu głównego</button>
+            `;
         }
+        
+        function returnToMenu() {
+            document.getElementById('menu').style.display = 'block';
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('result').style.display = 'none';
+
+            // Resetuj inne zmienne lub stan quizu, jeśli jest to konieczne
+            filteredQuestions = [];
+            currentQuestionIndex = 0;
+            score = 0;
+            selectedAnswers = [];
+}
     </script>
 </body>
 </html>
