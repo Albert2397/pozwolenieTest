@@ -65,6 +65,7 @@
     <script>
         let questions = [];
         let filteredQuestions = [];
+        let selectedRange = '';
         let currentQuestionIndex = 0;
         let score = 0;
         let selectedAnswers = [];
@@ -80,6 +81,7 @@
             });
 
         function startQuiz(option) {
+            selectedRange = option === 'random-20' ? 'Egzamin Próbny' : option;
             if (questions.length === 0) {
             alert('Pytania nie zostały jeszcze załadowane. Spróbuj ponownie za chwilę.');
             return;
@@ -139,7 +141,8 @@
                 const question = filteredQuestions[currentQuestionIndex];
                 const questionContainer = document.getElementById('question-container');
                 questionContainer.innerHTML = `
-                    <h2>Pytanie ${currentQuestionIndex + 1}/${filteredQuestions.length}: ${question.question}</h2>
+                <h1>Pytania ${selectedRange}</h1>
+                <h2>Pytanie ${currentQuestionIndex + 1}/${filteredQuestions.length}: ${question.question}</h2>
                     <div>
                         ${question.answers.map((answer, index) => `
                             <label>
