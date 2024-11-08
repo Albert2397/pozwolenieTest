@@ -55,11 +55,18 @@
     <div id="quiz" style="display: none">
       <div id="countdown-timer"></div>
       <div id="question-container"></div>
-      <button id="next-button" onclick="nextQuestion()">
+      <button id="next-button" class="large-button" onclick="nextQuestion()">
         Przejdź do kolejnego pytania
       </button>
+      <div class="small-buttons-container">
+        <button id="showResult" class="small-button" onclick="showResult()">
+          Zakończ - pokaż wynik
+        </button>
+        <button id="returnToMenu" class="small-button" onclick="returnToMenu()">
+          Powrót do menu głównego
+        </button>
+      </div>
     </div>
-
     <div id="result" style="display: none">
       <button onclick="returnToMenu()">Powrót do menu głównego</button>
     </div>
