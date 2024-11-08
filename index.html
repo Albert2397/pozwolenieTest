@@ -152,17 +152,8 @@
           const question = filteredQuestions[currentQuestionIndex];
           const questionContainer =
             document.getElementById("question-container");
-          let headerText;
-          if (selectedRange === "Egzamin Próbny") {
-            headerText = "Egzamin Próbny";
-          } else if (selectedRange === "all") {
-            headerText = "Wszystkie pytania";
-          } else {
-            headerText = `Pytania ${selectedRange}`;
-          }
-
           questionContainer.innerHTML = `
-            <h1>${headerText}</h1>
+            <h1>${headerText()}</h1>
             <h2>Pytanie ${currentQuestionIndex + 1}/${
             filteredQuestions.length
           }: ${question.question}</h2>
@@ -244,6 +235,7 @@
         const resultContainer = document.getElementById("result");
         resultContainer.style.display = "block";
         resultContainer.innerHTML = `
+            <h1>${headerText()}</h1>
             <h2>Twój wynik: ${score}/${filteredQuestions.length}</h2>
             ${
               score / filteredQuestions.length >= 0.9
@@ -294,6 +286,16 @@
         currentQuestionIndex = 0;
         score = 0;
         selectedAnswers = [];
+      }
+
+      function headerText() {
+        if (selectedRange === "Egzamin Próbny") {
+          return "Egzamin Próbny";
+        } else if (selectedRange === "all") {
+          return "Wszystkie pytania";
+        } else {
+          return `Pytania ${selectedRange}`;
+        }
       }
     </script>
   </body>
