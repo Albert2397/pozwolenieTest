@@ -635,8 +635,8 @@
         "question": "Nabywając broń palną, na której posiadanie wymagane jest pozwolenie, przy użyciu środków porozumiewania się na odległość, przed wydaniem broni nabywca mający miejsce stałego pobytu na terytorium innego niż Rzeczpospolita Polska państwa członkowskiego Unii Europejskiej, dostarcza zbywcy mającemu miejsce stałego pobytu na terytorium Rzeczypospolitej Polskiej: (art. 12a ust 2 uobia)",
         "answers": [
           { "label": "a", "text": "zgodę przewozową" , "is_correct": false },
-          { "label": "b", "text": "uprzednią zgodę przewozową" , "is_correct": false },
-          { "label": "c", "text": "zaświadczenie uprawniające do nabycia broni" , "is_correct": true }
+          { "label": "b", "text": "uprzednią zgodę przewozową" , "is_correct": true },
+          { "label": "c", "text": "zaświadczenie uprawniające do nabycia broni" , "is_correct": false }
         ]
       },
       {
@@ -1779,7 +1779,7 @@
         "answers": [
           { "label": "a", "text": "grzywnie, karze ograniczenia wolności albo pozbawienia wolności do lat 2" , "is_correct": false },
           { "label": "b", "text": "karze aresztu albo grzywny" , "is_correct": false },
-          { "label": "c", "text": "grzywnie" , "is_correct": true }
+          { "label": "c", "text": "karze pozbawienia wolności od 6 miesięcy do lat 8." , "is_correct": true }
         ]
       },
       {
