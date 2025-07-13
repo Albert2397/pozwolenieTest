@@ -129,19 +129,36 @@
         function checkAnswer(selectedIndex) {
             if (answered) return;
             answered = true;
+
             const question = trainingQuestions[currentIndex];
             const correctIndex = question.answers.findIndex(a => a.is_correct);
 
+            const inputs = document.querySelectorAll('input[name="answer"]');
             const labels = document.querySelectorAll('label');
+
+            inputs.forEach((input, i) => input.disabled = true);
+
             labels.forEach((label, i) => {
-                if (i === correctIndex) label.classList.add("correct");
-                else if (i === selectedIndex) label.classList.add("incorrect");
+                if (i === selectedIndex && selectedIndex === correctIndex) {
+                    label.style.color = "green"; // poprawna odpowiedź zaznaczona przez użytkownika
+                } else if (i === selectedIndex && selectedIndex !== correctIndex) {
+                    label.style.color = "red"; // błędna zaznaczona przez użytkownika
+                }
             });
 
+            const feedbackDiv = document.getElementById("feedback");
+
             if (selectedIndex !== correctIndex) {
-                document.getElementById("feedback").innerHTML = `
-          <p class="correct">Poprawna odpowiedź: ${question.answers[correctIndex].label}. ${question.answers[correctIndex].text}</p>
-        `;
+                feedbackDiv.innerHTML = `
+      <p style="color: black; font-weight: bold;">
+        Poprawna odpowiedź to:
+        <span style="color: green;">
+          ${question.answers[correctIndex].label}. ${question.answers[correctIndex].text}
+        </span>
+      </p>
+    `;
+            } else {
+                feedbackDiv.innerHTML = "";
             }
         }
 
