@@ -1,7 +1,3 @@
-/**
- * Klasa zarządzająca interfejsem użytkownika (DOM) aplikacji.
- * UWAGA: Poniższy kod zawiera logikę sprawdzania wyniku dla Egzaminu Próbnego.
- */
 class UIManager {
     constructor() {
         // Mapowanie kluczowych elementów DOM
@@ -26,7 +22,7 @@ class UIManager {
     }
 
 // ----------------------------------------------------------------------
-// OBSŁUGA ZDARZEŃ (Bez zmian)
+// OBSŁUGA ZDARZEŃ
 // ----------------------------------------------------------------------
 
     setupEventListeners(quizManager) {
@@ -70,7 +66,7 @@ class UIManager {
 
 
 // ----------------------------------------------------------------------
-// ZARZĄDZANIE WIDOKAMI I RENDEROWANIE TREŚCI (Bez zmian w logice)
+// ZARZĄDZANIE WIDOKAMI I RENDEROWANIE TREŚCI
 // ----------------------------------------------------------------------
 
     _hideAllViews() {
@@ -129,10 +125,6 @@ class UIManager {
         }
     }
     
-    /**
-     * Wyświetla ekran wyników końcowych.
-     * Dodano logikę sprawdzania wyniku (>= 80% to zdany).
-     */
     showResults(finalScore, totalQuestions, reason = 'finished') {
         this._hideAllViews();
         if (this.dom.resultsScreen) this.dom.resultsScreen.style.display = 'block';
@@ -167,7 +159,7 @@ class UIManager {
 
 
 // ----------------------------------------------------------------------
-// LOGIKA TIMERA UI (Bez zmian)
+// LOGIKA TIMERA UI
 // ----------------------------------------------------------------------
 
     formatTime(totalSeconds) {
@@ -184,7 +176,7 @@ class UIManager {
     }
     
 // ----------------------------------------------------------------------
-// WIZUALNE INFORMACJE ZWROTNE I STANY PRZYCISKÓW (Bez zmian)
+// WIZUALNE INFORMACJE ZWROTNE I STANY PRZYCISKÓW
 // ----------------------------------------------------------------------
 
     highlightAnswer(selectedKey, isCorrect, correctKey) {
