@@ -1,311 +1,43 @@
 <!DOCTYPE html>
 <html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Strona szkoleniowa</title>
-    <link rel="stylesheet" href="style.css" />
-    <style>
-      /* Ustawienie stylu stopki, aby znajdowała się na dole zawartości */
-      #menu,
-      #quiz,
-      #result {
-        padding-bottom: 50px; /* Dodatkowa przestrzeń nad stopką */
-      }
-      footer {
-        text-align: center;
-        padding: 1em;
-        background-color: #f1f1f1;
-        font-size: 0.9em;
-        position: fixed;
-        width: 100%;
-        bottom: 0;
-        left: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="menu">
-      <h1>Wybierz opcję:</h1>
-      <a href="ustawa.html">Przejdź do ustawy</a>
-      <a href="trening.html">Tryb treningowy</a>
-      <button onclick="startQuiz('all')">Wszystkie pytania</button>
-      <button onclick="startQuiz('1-10')">Pytania 1-10</button>
-      <button onclick="startQuiz('11-20')">Pytania 11-20</button>
-      <button onclick="startQuiz('21-30')">Pytania 21-30</button>
-      <button onclick="startQuiz('31-40')">Pytania 31-40</button>
-      <button onclick="startQuiz('41-50')">Pytania 41-50</button>
-      <button onclick="startQuiz('51-60')">Pytania 51-60</button>
-      <button onclick="startQuiz('61-70')">Pytania 61-70</button>
-      <button onclick="startQuiz('71-80')">Pytania 71-80</button>
-      <button onclick="startQuiz('81-90')">Pytania 81-90</button>
-      <button onclick="startQuiz('91-100')">Pytania 91-100</button>
-      <button onclick="startQuiz('101-110')">Pytania 101-110</button>
-      <button onclick="startQuiz('111-120')">Pytania 111-120</button>
-      <button onclick="startQuiz('121-130')">Pytania 121-130</button>
-      <button onclick="startQuiz('131-140')">Pytania 131-140</button>
-      <button onclick="startQuiz('141-150')">Pytania 141-150</button>
-      <button onclick="startQuiz('151-160')">Pytania 151-160</button>
-      <button onclick="startQuiz('161-170')">Pytania 161-170</button>
-      <button onclick="startQuiz('171-180')">Pytania 171-180</button>
-      <button onclick="startQuiz('181-190')">Pytania 181-190</button>
-      <button onclick="startQuiz('191-200')">Pytania 191-200</button>
-      <button onclick="startQuiz('random-20')">
-        20 losowych pytań - Egzamin Próbny
-      </button>
-    </div>
-    <div id="quiz" style="display: none">
-      <div id="countdown-timer"></div>
-      <div id="question-container"></div>
-      <button id="next-button" class="large-button" onclick="nextQuestion()">
-        Przejdź do kolejnego pytania
-      </button>
-      <div class="small-buttons-container">
-        <button id="showResult" class="small-button" onclick="showResult()">
-          Zakończ - pokaż wynik
-        </button>
-        <button id="returnToMenu" class="small-button" onclick="returnToMenu()">
-          Powrót do menu głównego
-        </button>
-      </div>
-    </div>
-    <div id="result" style="display: none">
-      <button onclick="returnToMenu()">Powrót do menu głównego</button>
-    </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POZWOLENIE - Egzamin i Trening</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Aplikacja Szkoleniowa "POZWOLENIE NA BROŃ"</h1>
+    </header>
+
+    <main>
+        <div id="menu" style="display: block;">
+            <h2>Wybierz Tryb</h2>
+            <button id="start-quiz-button">Egzamin Próbny (20 pytań)</button>
+            <a href="trening.html"><button>Tryb Treningowy (Wszystkie pytania)</button></a>
+            <a href="ustawa.html"><button>Przejdź do Ustawy</button></a>
+        </div>
+
+        <div id="quiz-container" style="display: none;">
+            <p id="score-display">Wynik: 0</p>
+            <h2 id="question-text">Pytanie zostanie załadowane...</h2>
+            <p id="timer-display">Czas: 30:00</p>
+            <div id="answers-container" class="answers">
+                </div>
+        </div>
+
+        <div id="results-screen" style="display: none;">
+            <div id="restart-button-placeholder">
+                </div>
+        </div>
+    </main>
 
     <footer>
-      Created by: Albert Krzywicki &bull; All rights reserved &bull; 2024
+        <p>Created by: Albert Krzywicki • All rights reserved • 2024</p>
     </footer>
 
-    <script>
-      let questions = [];
-      let filteredQuestions = [];
-      let selectedRange = "";
-      let currentQuestionIndex = 0;
-      let score = 0;
-      let selectedAnswers = [];
-
-      fetch("questions.json")
-        .then((response) => response.json())
-        .then((data) => {
-          questions = data.questions;
-          document.getElementById("menu").style.display = "block";
-        })
-        .catch((error) => {
-          alert("Błąd podczas ładowania pytań: " + error);
-        });
-
-      function startQuiz(option) {
-        selectedRange = option === "random-20" ? "Egzamin Próbny" : option;
-        if (questions.length === 0) {
-          alert(
-            "Pytania nie zostały jeszcze załadowane. Spróbuj ponownie za chwilę."
-          );
-          return;
-        }
-
-        document.getElementById("menu").style.display = "none";
-        document.getElementById("quiz").style.display = "block";
-
-        const ranges = {
-          all: [0, questions.length],
-          "1-10": [0, 10],
-          "11-20": [10, 20],
-          "21-30": [20, 30],
-          "31-40": [30, 40],
-          "41-50": [40, 50],
-          "51-60": [50, 60],
-          "61-70": [60, 70],
-          "71-80": [70, 80],
-          "81-90": [80, 90],
-          "91-100": [90, 100],
-          "101-110": [100, 110],
-          "111-120": [110, 120],
-          "121-130": [120, 130],
-          "131-140": [130, 140],
-          "141-150": [140, 150],
-          "151-160": [150, 160],
-          "161-170": [160, 170],
-          "171-180": [170, 180],
-          "181-190": [180, 190],
-          "191-200": [190, 200],
-          "random-20": "random-20",
-        };
-
-        if (option === "random-20") {
-          filteredQuestions = questions
-            .slice()
-            .sort(() => 0.5 - Math.random())
-            .slice(0, 20);
-          startCountdown(30);
-        } else {
-          const [start, end] = ranges[option];
-          filteredQuestions = questions.slice(start, end);
-        }
-
-        currentQuestionIndex = 0;
-        score = 0;
-        selectedAnswers = [];
-
-        if (filteredQuestions.length > 0) {
-          showQuestion();
-        } else {
-          alert("Brak pytań do wyświetlenia.");
-          document.getElementById("menu").style.display = "block";
-          document.getElementById("quiz").style.display = "none";
-        }
-      }
-
-      function showQuestion() {
-        if (currentQuestionIndex < filteredQuestions.length) {
-          const question = filteredQuestions[currentQuestionIndex];
-          const questionContainer =
-            document.getElementById("question-container");
-          questionContainer.innerHTML = `
-            <h1>${headerText()}</h1>
-            <h2>Pytanie ${currentQuestionIndex + 1}/${
-            filteredQuestions.length
-          }: ${question.question}</h2>
-            <div>
-                ${question.answers
-                  .map(
-                    (answer, index) => `
-                    <label>
-                        <input type="radio" name="answer" value="${index}">
-                        ${answer.label}. ${answer.text}
-                    </label><br>
-                `
-                  )
-                  .join("")}
-            </div>
-        `;
-        } else {
-          showResult();
-        }
-      }
-
-      function nextQuestion() {
-        const selectedOption = document.querySelector(
-          'input[name="answer"]:checked'
-        );
-        if (selectedOption) {
-          const selectedAnswerIndex = parseInt(selectedOption.value);
-          const correctAnswerIndex = filteredQuestions[
-            currentQuestionIndex
-          ].answers.findIndex((answer) => answer.is_correct);
-
-          selectedAnswers.push({
-            question: filteredQuestions[currentQuestionIndex].question,
-            selectedAnswer: selectedAnswerIndex,
-            correctAnswer: correctAnswerIndex,
-          });
-
-          if (selectedAnswerIndex === correctAnswerIndex) {
-            score++;
-          }
-
-          currentQuestionIndex++;
-          showQuestion();
-        } else {
-          alert("Wybierz odpowiedź, zanim przejdziesz do kolejnego pytania.");
-        }
-      }
-
-      function startCountdown(minutes) {
-        let time = minutes * 60;
-        const countdownElement = document.createElement("div");
-        countdownElement.id = "timer";
-        const quizElement = document.getElementById("quiz");
-        quizElement.insertBefore(
-          countdownElement,
-          document.getElementById("question-container")
-        );
-
-        timerInterval = setInterval(() => {
-          const minutes = Math.floor(time / 60);
-          const seconds = time % 60;
-
-          countdownElement.textContent = `${minutes
-            .toString()
-            .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-
-          if (time <= 0) {
-            clearInterval(timerInterval);
-            alert("Czas minął!");
-            showResult();
-          } else {
-            time--;
-          }
-        }, 1000);
-      }
-
-      function showResult() {
-        document.getElementById("quiz").style.display = "none";
-        const resultContainer = document.getElementById("result");
-        resultContainer.style.display = "block";
-        resultContainer.innerHTML = `
-            <h1>${headerText()}</h1>
-            <h2>Twój wynik: ${score}/${filteredQuestions.length}</h2>
-            ${
-              score / filteredQuestions.length >= 0.9
-                ? '<p style="font-weight: bold; font-size: 1.5em; color: green;">Zdane!</p>'
-                : '<p style="font-weight: bold; font-size: 1.5em; color: red;">Niezdane!</p>'
-            }
-            <h3>Raport:</h3><ul>
-            ${selectedAnswers
-              .map(
-                (item, index) => `
-                <li>
-                <p>Pytanie ${index + 1}: ${item.question}</p>
-                <p>Twoja odpowiedź: <span style="color: ${
-                  item.selectedAnswer === item.correctAnswer ? "green" : "red"
-                };">
-                ${
-                  filteredQuestions[index].answers[item.selectedAnswer].label
-                }. ${
-                  filteredQuestions[index].answers[item.selectedAnswer].text
-                }</span></p>
-                ${
-                  item.selectedAnswer !== item.correctAnswer
-                    ? `<p>Prawidłowa odpowiedź to: <span style="color: green;">${
-                        filteredQuestions[index].answers[item.correctAnswer]
-                          .label
-                      }. ${
-                        filteredQuestions[index].answers[item.correctAnswer]
-                          .text
-                      }</span></p>`
-                    : ""
-                }
-                </li>
-            `
-              )
-              .join("")}
-            </ul>
-            <button onclick="returnToMenu()">Powrót do menu głównego</button>
-            `;
-      }
-
-      function returnToMenu() {
-        document.getElementById("menu").style.display = "block";
-        document.getElementById("quiz").style.display = "none";
-        document.getElementById("result").style.display = "none";
-
-        // Resetuj inne zmienne lub stan quizu, jeśli jest to konieczne
-        filteredQuestions = [];
-        currentQuestionIndex = 0;
-        score = 0;
-        selectedAnswers = [];
-      }
-
-      function headerText() {
-        if (selectedRange === "Egzamin Próbny") {
-          return "Egzamin Próbny";
-        } else if (selectedRange === "all") {
-          return "Wszystkie pytania";
-        } else {
-          return `Pytania ${selectedRange}`;
-        }
-      }
-    </script>
-  </body>
+    <script type="module" src="js/main.js"></script> 
+</body>
 </html>

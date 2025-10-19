@@ -2,177 +2,48 @@
 <html lang="pl">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Trening</title>
-    <link rel="stylesheet" href="style.css" />
-    <style>
-        .correct {
-            color: green;
-            font-weight: bold;
-        }
-
-        .incorrect {
-            color: red;
-            font-weight: bold;
-        }
-
-        footer {
-            text-align: center;
-            padding: 1em;
-            background-color: #f1f1f1;
-            font-size: 0.9em;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-            left: 0;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tryb Treningowy</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <div id="menu">
-        <h1>Trening: wybierz zakres pytań</h1>
-        <button onclick="startTraining('all')">Wszystkie pytania</button>
-        <button onclick="startTraining('1-10')">Pytania 1-10</button>
-        <button onclick="startTraining('11-20')">Pytania 11-20</button>
-        <button onclick="startTraining('21-30')">Pytania 21-30</button>
-        <button onclick="startTraining('31-40')">Pytania 31-40</button>
-        <button onclick="startTraining('41-50')">Pytania 41-50</button>
-        <button onclick="startTraining('51-60')">Pytania 51-60</button>
-        <button onclick="startTraining('61-70')">Pytania 61-70</button>
-        <button onclick="startTraining('71-80')">Pytania 71-80</button>
-        <button onclick="startTraining('81-90')">Pytania 81-90</button>
-        <button onclick="startTraining('91-100')">Pytania 91-100</button>
-        <button onclick="startTraining('101-110')">Pytania 101-110</button>
-        <button onclick="startTraining('111-120')">Pytania 111-120</button>
-        <button onclick="startTraining('121-130')">Pytania 121-130</button>
-        <button onclick="startTraining('131-140')">Pytania 131-140</button>
-        <button onclick="startTraining('141-150')">Pytania 141-150</button>
-        <button onclick="startTraining('151-160')">Pytania 151-160</button>
-        <button onclick="startTraining('161-170')">Pytania 161-170</button>
-        <button onclick="startTraining('171-180')">Pytania 171-180</button>
-        <button onclick="startTraining('181-190')">Pytania 181-190</button>
-        <button onclick="startTraining('191-200')">Pytania 191-200</button>
-        <button onclick="window.location.href='index.html'">Powrót</button>
-    </div>
 
-    <div id="quiz" style="display: none">
-        <div id="question-container"></div>
-        <button id="next-button" onclick="nextTrainingQuestion()">Następne pytanie</button>
-    </div>
+    <header>
+        <h1>Tryb Treningowy</h1>
+    </header>
 
-    <footer>Created by: Albert Krzywicki &bull; All rights reserved &bull; 2024</footer>
+    <main>
+        <div id="menu" style="display: none;"></div>
 
-    <script>
-        let questions = [];
-        let trainingQuestions = [];
-        let currentIndex = 0;
-        let answered = false;
-
-        fetch("questions.json")
-            .then(res => res.json())
-            .then(data => questions = data.questions)
-            .catch(err => alert("Błąd ładowania pytań: " + err));
-
-        function startTraining(range) {
-            const ranges = {
-                all: [0, questions.length],
-                "1-10": [0, 10],
-                "11-20": [10, 20],
-                "21-30": [20, 30],
-                "31-40": [30, 40],
-                "41-50": [40, 50],
-                "51-60": [50, 60],
-                "61-70": [60, 70],
-                "71-80": [70, 80],
-                "81-90": [80, 90],
-                "91-100": [90, 100],
-                "101-110": [100, 110],
-                "111-120": [110, 120],
-                "121-130": [120, 130],
-                "131-140": [130, 140],
-                "141-150": [140, 150],
-                "151-160": [150, 160],
-                "161-170": [160, 170],
-                "171-180": [170, 180],
-                "181-190": [180, 190],
-                "191-200": [190, 200],
-            };
-            const [start, end] = ranges[range];
-            trainingQuestions = questions.slice(start, end);
-            currentIndex = 0;
-            document.getElementById("menu").style.display = "none";
-            document.getElementById("quiz").style.display = "block";
-            showTrainingQuestion();
-        }
-
-        function showTrainingQuestion() {
-            answered = false;
-            const q = trainingQuestions[currentIndex];
-            const container = document.getElementById("question-container");
-            container.innerHTML = `
-        <h2>Pytanie ${currentIndex + 1}/${trainingQuestions.length}</h2>
-        <p>${q.question}</p>
-        <div>
-          ${q.answers.map((a, i) => `
-            <label>
-              <input type="radio" name="answer" value="${i}" onclick="checkAnswer(${i})" />
-              ${a.label}. ${a.text}
-            </label><br>
-          `).join("")}
+        <div id="trening-menu" style="display: block;">
+            <h2>Wybierz Zakres Pytań</h2>
+            <div id="range-buttons-container" class="range-selection">
+            </div>
+            <button id="back-to-main-menu">Powrót do Menu Głównego</button>
         </div>
-        <div id="feedback"></div>
-      `;
-        }
 
-        function checkAnswer(selectedIndex) {
-            if (answered) return;
-            answered = true;
+        <div id="quiz-container" style="display: none;">
+            <p id="score-display">Wynik: 0</p>
+            <h2 id="question-text">Pytanie zostanie załadowane...</h2>
 
-            const question = trainingQuestions[currentIndex];
-            const correctIndex = question.answers.findIndex(a => a.is_correct);
+            <div id="answers-container" class="answers">
+            </div>
+            <button id="back-to-range-selection">Wybierz inny zakres</button>
+        </div>
 
-            const inputs = document.querySelectorAll('input[name="answer"]');
-            const labels = document.querySelectorAll('label');
+        <div id="results-screen" style="display: none;">
+            <div id="restart-button-placeholder">
+            </div>
+        </div>
+    </main>
 
-            inputs.forEach((input, i) => input.disabled = true);
+    <footer>
+        <p>Created by: Albert Krzywicki • All rights reserved • 2024</p>
+    </footer>
 
-            labels.forEach((label, i) => {
-                if (i === selectedIndex && selectedIndex === correctIndex) {
-                    label.style.color = "green"; // poprawna odpowiedź zaznaczona przez użytkownika
-                } else if (i === selectedIndex && selectedIndex !== correctIndex) {
-                    label.style.color = "red"; // błędna zaznaczona przez użytkownika
-                }
-            });
-
-            const feedbackDiv = document.getElementById("feedback");
-
-            if (selectedIndex !== correctIndex) {
-                feedbackDiv.innerHTML = `
-      <p style="color: black; font-weight: bold;">
-        Poprawna odpowiedź to:
-        <span style="color: green;">
-          ${question.answers[correctIndex].label}. ${question.answers[correctIndex].text}
-        </span>
-      </p>
-    `;
-            } else {
-                feedbackDiv.innerHTML = "";
-            }
-        }
-
-        function nextTrainingQuestion() {
-            if (currentIndex < trainingQuestions.length - 1) {
-                currentIndex++;
-                showTrainingQuestion();
-            } else {
-                alert("Koniec treningu!");
-                document.getElementById("quiz").style.display = "none";
-                document.getElementById("menu").style.display = "block";
-            }
-        }
-    </script>
+    <script type="module" src="js/trening.js"></script>
 </body>
 
 </html>
