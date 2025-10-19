@@ -1,36 +1,41 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POZWOLENIE - Egzamin i Trening</title>
+    <title>Tryb Treningowy</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
     <header>
-        <h1>Aplikacja Szkoleniowa "POZWOLENIE NA BROŃ"</h1>
+        <h1>Tryb Treningowy</h1>
     </header>
 
     <main>
-        <div id="menu" style="display: block;">
-            <h2>Wybierz Tryb</h2>
-            <button id="start-quiz-button">Egzamin Próbny (20 pytań)</button>
-            <a href="trening.html"><button>Tryb Treningowy (Wszystkie pytania)</button></a>
-            <a href="ustawa.html"><button>Przejdź do Ustawy</button></a>
+        <div id="menu" style="display: none;"></div>
+
+        <div id="trening-menu" style="display: block;">
+            <h2>Wybierz Zakres Pytań</h2>
+            <div id="range-buttons-container" class="range-selection">
+            </div>
+            <button id="back-to-main-menu">Powrót do Menu Głównego</button>
         </div>
 
         <div id="quiz-container" style="display: none;">
             <p id="score-display">Wynik: 0</p>
             <h2 id="question-text">Pytanie zostanie załadowane...</h2>
-            <p id="timer-display">Czas: 30:00</p>
+
             <div id="answers-container" class="answers">
-                </div>
+            </div>
+            <button id="back-to-range-selection">Wybierz inny zakres</button>
         </div>
 
         <div id="results-screen" style="display: none;">
             <div id="restart-button-placeholder">
-                </div>
+            </div>
         </div>
     </main>
 
@@ -38,6 +43,7 @@
         <p>Created by: Albert Krzywicki • All rights reserved • 2024</p>
     </footer>
 
-    <script type="module" src="js/main.js"></script> 
+    <script type="module" src="js/trening.js"></script>
 </body>
+
 </html>
