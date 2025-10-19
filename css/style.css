@@ -10,7 +10,7 @@
 html, body {
     height: 100%; /* Zapewnia, że body ma pełną wysokość */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f9;
+    background-color:#000000;
     color: #333;
 }
 
@@ -32,7 +32,7 @@ main {
    2. NAGŁÓWEK I STOPKA
    ==================================== */
 header {
-    background-color: #007bff;
+    background-color: #059669;
     color: white;
     padding: 25px 20px;
     text-align: center;
@@ -47,8 +47,8 @@ header h1 {
 footer {
     padding: 10px;
     text-align: center;
-    background-color: #e9ecef;
-    color: #6c757d;
+    background-color: #000000;
+    color: white;
     width: 100%;
     margin-top: auto; /* Wypycha stopkę na sam dół */
     font-size: 0.8em;
@@ -58,7 +58,7 @@ footer {
    3. KONTENERY WIDOKÓW (MENU/QUIZ/WYNIKI)
    ==================================== */
 #menu, #quiz-container, #results-screen, #trening-menu, #ustawa-content {
-    background-color: white;
+    background-color: #000000;
     padding: 40px;
     border-radius: 10px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
@@ -69,7 +69,7 @@ footer {
 
 #menu h2, #trening-menu h2 {
     margin-bottom: 25px;
-    color: #343a40;
+    color: white;
 }
 
 /* Informacja o wyniku i czasie w quizie */
@@ -94,6 +94,7 @@ footer {
     font-size: 1.25em;
     line-height: 1.5;
     text-align: left;
+    color: white;
 }
 
 /* ====================================
@@ -106,7 +107,7 @@ button, a button, a.button-link {
     margin-bottom: 12px;
     border: none;
     border-radius: 8px;
-    background-color: #007bff;
+    background-color: #059669;
     color: white;
     font-size: 17px;
     font-weight: 600;
@@ -117,7 +118,7 @@ button, a button, a.button-link {
 }
 
 button:hover:not(:disabled), a button:hover, a.button-link:hover {
-    background-color: #0056b3;
+    background-color: #06d191;
     transform: translateY(-1px);
 }
 
@@ -132,7 +133,7 @@ button:hover:not(:disabled), a button:hover, a.button-link:hover {
 
 .answer-button:hover:not(:disabled) {
     background-color: #e9ecef;
-    color: #007bff;
+    color: #059669;
 }
 
 /* Styl dla przycisków po wyłączeniu (po kliknięciu) */
