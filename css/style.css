@@ -149,14 +149,14 @@ button:hover:not(:disabled), a button:hover, a.button-link:hover {
 /* Poprawna odpowiedź */
 .answer-correct {
     background-color: #28a745 !important; /* Zielony */
-    color: white !important;
+    color: white !important; /* Wymuś biały tekst na zielonym tle */
     border-color: #28a745 !important;
 }
 
 /* Błędna odpowiedź */
 .answer-incorrect {
     background-color: #dc3545 !important; /* Czerwony */
-    color: white !important;
+    color: white !important; /* Wymuś biały tekst na czerwonym tle */
     border-color: #dc3545 !important;
 }
 
@@ -199,10 +199,9 @@ button:hover:not(:disabled), a button:hover, a.button-link:hover {
 }
 
 /* ====================================
-   7. STYLIZACJA EKRANÓW WYNIKÓW (NAPRAWIONA)
+   7. STYLIZACJA EKRANÓW WYNIKÓW
    ==================================== */
 #results-screen {
-    /* Upewnienie się, że kontener wyników jest wyśrodkowany i zorientowany pionowo */
     display: flex;
     flex-direction: column;
     align-items: center; 
@@ -210,7 +209,7 @@ button:hover:not(:disabled), a button:hover, a.button-link:hover {
 }
 
 #results-screen h2, #results-screen p {
-    color: white; /* Upewnienie się, że tekst jest widoczny na czarnym tle kontenera */
+    color: white; 
     margin-bottom: 10px;
 }
 
@@ -220,14 +219,13 @@ button:hover:not(:disabled), a button:hover, a.button-link:hover {
     margin-top: 30px; 
     width: 100%; 
     display: flex;
-    flex-direction: column; /* Układanie przycisków jeden pod drugim */
+    flex-direction: column; 
     gap: 15px; 
 }
 
-/* Upewnienie się, że przyciski restartu/powrotu używają ogólnego stylu z sekcji 4 */
 #results-buttons-placeholder button,
 #trening-results-buttons button {
-    margin-bottom: 0; /* Zerujemy domyślny margines z sekcji 4, bo używamy 'gap' */
+    margin-bottom: 0; 
 }
 
 /* Dla większych ekranów, aby przyciski nie były za szerokie */
@@ -239,25 +237,24 @@ button:hover:not(:disabled), a button:hover, a.button-link:hover {
 }
 
 /* ====================================
-   8. KOREKTA DLA URZĄDZEŃ MOBILNYCH (PROBLEM Z HOVEREM)
+   8. KOREKTA DLA URZĄDZEŃ MOBILNYCH (NAPRAWIONA LOGIKA HOVER)
    ==================================== */
 
-/* Używamy reguły media query, aby wyłączyć lub stonować stan :hover na urządzeniach dotykowych, 
-   gdzie "tapnięcie" często powoduje trwały stan najechania. */
 @media (hover: none) {
     
-    /* Przyciski odpowiedzi: przywracamy normalny stan w :hover */
-    .answer-button:hover {
-        background-color: #f8f9fa !important; 
-        color: #333 !important;
+    /* KLUCZOWA POPRAWKA: Wyłączamy styl hover TYLKO dla czystych przycisków, 
+       aby nie nadpisywać klas poprawności/błędów, gdy są już aktywne. */
+    .answer-button:hover:not(.answer-correct):not(.answer-incorrect) {
+        background-color: #f8f9fa !important; /* Normalny stan */
+        color: #333 !important; /* Normalny tekst */
         transform: none; 
     }
     
-    /* Ogólne przyciski (w menu, restartu): stonowanie efektu hover */
+    /* Wyłączamy transformację dla ogólnych przycisków, aby zapobiec "lepkiemu" efektowi */
     button:hover:not(:disabled), 
     a button:hover, 
     a.button-link:hover {
-        background-color: #059669; /* Wracamy do normalnego tła */
-        transform: none; /* Wyłączamy transformację */
+        background-color: #059669; 
+        transform: none;
     }
 }
