@@ -197,3 +197,47 @@ button:hover:not(:disabled), a button:hover, a.button-link:hover {
 .back-button {
     margin-top: 30px; 
 }
+
+/* ====================================
+   7. STYLIZACJA EKRANÓW WYNIKÓW (NOWA SEKCJA)
+   ==================================== */
+
+/* Centralne ustawienia dla ekranu wyników */
+#results-screen {
+    /* Nadpisanie domyślnego text-align: center; jeśli było potrzebne,
+       aby wyśrodkować blok tekstu i przycisków */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Wyśrodkowanie elementów w pionie */
+    justify-content: center;
+}
+
+#results-screen h2, #results-screen p {
+    color: white; /* Tekst wyników jest biały, zgodnie z czarnym tłem kontenera */
+    margin-bottom: 10px;
+}
+
+/* Styl dla kontenerów przechowujących nowe przyciski (Egzamin i Trening) */
+#results-buttons-placeholder, 
+#trening-results-buttons {
+    margin-top: 30px; /* Odstęp od statystyk */
+    width: 100%; /* Kontener zajmuje całą dostępną szerokość */
+    display: flex;
+    flex-direction: column; /* Układanie przycisków jeden pod drugim */
+    gap: 15px; /* Odstęp między przyciskami */
+}
+
+/* Upewnienie się, że przyciski restartu/powrotu używają ogólnego stylu z sekcji 4 */
+#results-buttons-placeholder button,
+#trening-results-buttons button {
+    /* Używamy stylów z sekcji 4. W razie potrzeby można tu dodać dodatkowe marginesy. */
+    margin-bottom: 0; /* Zerujemy domyślny margines z sekcji 4 */
+}
+
+/* Dla większych ekranów, aby przyciski nie były za szerokie */
+@media (min-width: 600px) {
+    #results-buttons-placeholder,
+    #trening-results-buttons {
+        max-width: 350px;
+    }
+}

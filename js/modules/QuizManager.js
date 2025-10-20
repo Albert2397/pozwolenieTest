@@ -36,13 +36,28 @@ class QuizManager {
     }
     
     /**
+     * RESETUJE stan quizu (wynik, indeks pytania, timer).
+     * Używane przed rozpoczęciem nowej sesji.
+     */
+    resetQuiz() {
+        this.stopTimer();
+        this.currentQuestionIndex = 0;
+        this.score = 0;
+        this.timeLeft = this.timerDuration; // Reset timera
+        this.onTimerTick(this.timeLeft); // Aktualizacja UI timera na startową wartość
+    }
+
+    /**
      * Przygotowuje pulę pytań dla nowej sesji quizu.
      * @param {string} mode Tryb quizu ('exam' lub 'trening')
      * @param {number} [start] Numer początkowy pytania.
      * @param {number} [end] Numer końcowy pytania.
      */
     startQuiz(mode = 'all', start = 1, end = Infinity) {
-        this.stopTimer(); 
+        // Logika resetu została przeniesiona do metody resetQuiz(), 
+        // ale można ją zostawić tutaj jako zabezpieczenie, jeśli startQuiz 
+        // jest wywoływany samodzielnie. W UIManager.js użyliśmy już resetQuiz().
+
         this.currentQuestionIndex = 0;
         this.score = 0;
         
