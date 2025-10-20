@@ -22,7 +22,6 @@ class QuizManager {
             const response = await fetch('./js/data/questions.json');
             const rawData = await response.json();
             
-            // Odczyt tablicy z pola 'questions'
             const questionsArray = rawData.questions || []; 
             
             this.allQuestionsData = questionsArray.map(qData => new Question(qData));
@@ -37,34 +36,25 @@ class QuizManager {
     
     /**
      * RESETUJE stan quizu (wynik, indeks pytania, timer).
-     * Używane przed rozpoczęciem nowej sesji.
      */
     resetQuiz() {
         this.stopTimer();
         this.currentQuestionIndex = 0;
         this.score = 0;
-        this.timeLeft = this.timerDuration; // Reset timera
-        this.onTimerTick(this.timeLeft); // Aktualizacja UI timera na startową wartość
+        this.timeLeft = this.timerDuration; 
+        this.onTimerTick(this.timeLeft); 
     }
 
     /**
      * Przygotowuje pulę pytań dla nowej sesji quizu.
-     * @param {string} mode Tryb quizu ('exam' lub 'trening')
-     * @param {number} [start] Numer początkowy pytania.
-     * @param {number} [end] Numer końcowy pytania.
      */
     startQuiz(mode = 'all', start = 1, end = Infinity) {
-        // Logika resetu została przeniesiona do metody resetQuiz(), 
-        // ale można ją zostawić tutaj jako zabezpieczenie, jeśli startQuiz 
-        // jest wywoływany samodzielnie. W UIManager.js użyliśmy już resetQuiz().
-
         this.currentQuestionIndex = 0;
         this.score = 0;
         
         let questionsToUse = [...this.allQuestionsData];
 
         if (mode === 'trening') {
-            // Filtrowanie zakresu pytań
             questionsToUse = questionsToUse.filter(q => q.id >= start && q.id <= end);
             this.quizQuestions = questionsToUse;
         } 
@@ -96,7 +86,6 @@ class QuizManager {
 
         this.currentQuestionIndex++; 
         
-        // Jeśli to było ostatnie pytanie, zatrzymaj timer
         if (this.isQuizFinished()) {
             this.stopTimer();
         }
@@ -108,11 +97,20 @@ class QuizManager {
         return this.currentQuestionIndex >= this.quizQuestions.length;
     }
 
+    /**
+     * Zatrzymuje egzamin i ustawia go jako zakończony.
+     */
+    przerwijEgzamin() {
+        this.stopTimer();
+        // Ustawienie currentQuestionIndex na max, by symulować zakończenie
+        this.currentQuestionIndex = this.quizQuestions.length; 
+    }
+
     // ---------- LOGIKA TIMERA ----------
     
     startTimer() {
         this.timeLeft = this.timerDuration; 
-        this.onTimerTick(this.timeLeft); // Aktualizacja UI od razu
+        this.onTimerTick(this.timeLeft); 
         
         this.timerIntervalId = setInterval(() => {
             this.timeLeft--;

@@ -11,7 +11,7 @@ class UIManager {
             startQuizButton: document.getElementById('start-quiz-button'),
             // Elementy z index.html (Egzamin)
             resultsButtonsPlaceholder: document.getElementById('results-buttons-placeholder'), 
-            examResultsContent: document.getElementById('exam-results-content'), 
+            examResultsContent: document.getElementById('exam-results-content'), // NOWY KONTENER TREŚCI DLA EGZAMINU
             timerDisplay: document.getElementById('timer-display'), 
             // Elementy z trening.html (Trening)
             treningMenu: document.getElementById('trening-menu'),
@@ -42,6 +42,24 @@ class UIManager {
                  quizManager.startQuiz('exam');
                  this.showQuiz();
                  this.goToNext(quizManager);
+            });
+        }
+        
+        // DODANIE OBSŁUGI PRZYCISKU PRZERWIJ EGZAMIN
+        const przerwijEgzaminBtn = document.getElementById('przerwij-egzamin-btn');
+
+        if (przerwijEgzaminBtn) {
+            przerwijEgzaminBtn.addEventListener('click', () => {
+                if (confirm("Czy na pewno chcesz przerwać egzamin i zobaczyć dotychczasowe wyniki?")) {
+                    quizManager.przerwijEgzamin(); // Zatrzymuje timer i ustawia koniec
+                    this.showResults(
+                        quizManager.score, 
+                        quizManager.quizQuestions.length, 
+                        quizManager, 
+                        'exam', 
+                        'przerwany' // Nowy status
+                    );
+                }
             });
         }
     }
@@ -142,6 +160,8 @@ class UIManager {
         let headerText = "Koniec Egzaminu";
         if (reason === 'expired') {
             headerText = "⏰ Czas minął! ⏰"; 
+        } else if (reason === 'przerwany') { // Nowy nagłówek dla przerwanych egzaminów
+            headerText = "Egzamin Przerwany";
         }
 
         let resultsHTML = '';
@@ -181,7 +201,7 @@ class UIManager {
         if (mode === 'exam' && this.dom.resultsButtonsPlaceholder) {
             // Przyciski dla Egzaminu Próbnego
             this.dom.resultsButtonsPlaceholder.innerHTML = `
-                <button id="restart-quiz-btn">Ponownie rozwiąż test (Nowy zakres pytań)</button>
+                <button id="restart-quiz-btn">Spróbuj ponownie</button>
                 <button id="go-to-main-menu-btn">Wróć do menu głównego</button>
             `;
             
