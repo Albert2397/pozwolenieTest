@@ -40,7 +40,6 @@ const handleRangeSelection = (event) => {
     const start = parseInt(button.dataset.start);
     const end = parseInt(button.dataset.end);
 
-    // Zresetowanie stanu QuizManagera przed nowym treningiem
     quizManager.resetQuiz(); 
     quizManager.startQuiz('trening', start, end);
     
@@ -67,15 +66,30 @@ const initTreningMode = async () => {
     generateRangeButtons();
     document.getElementById('range-buttons-container').addEventListener('click', handleRangeSelection);
     
-    // 4. Obsługa przycisku "Powrót do Menu Głównego"
-    // Ten przycisk jest w widoku #trening-menu, więc musi być obsługiwany w trening.js
+    // 4. Obsługa przycisku "Powrót do Menu Głównego" (w menu wyboru zakresu)
     document.getElementById('back-to-main-menu').addEventListener('click', () => {
-        window.location.href = 'index.html'; // Powrót do menu głównego
+        window.location.href = 'index.html';
     });
     
-    // USUNIĘTO: stary listener dla 'back-to-range-selection', 
-    // ponieważ ta funkcjonalność jest teraz obsługiwana przez nowy przycisk
-    // na ekranie wyników wewnątrz UIManager.js
+    // 5. OBSŁUGA PRZYCISKÓW W TRAKCIE QUIZU (NOWA LOGIKA)
+    const backToRangeBtn = document.getElementById('back-to-range-selection');
+    const goToMainMenuBtn = document.getElementById('go-to-main-menu-from-quiz');
+
+    if (backToRangeBtn) {
+        backToRangeBtn.addEventListener('click', () => {
+            // Logika: ukryj quiz, pokaż menu wyboru zakresu
+            uiManager._hideAllViews(); 
+            document.getElementById('trening-menu').style.display = 'block';
+            quizManager.resetQuiz(); 
+        });
+    }
+
+    if (goToMainMenuBtn) {
+        goToMainMenuBtn.addEventListener('click', () => {
+            // Logika: powrót do index.html
+            window.location.href = 'index.html';
+        });
+    }
 
     // Upewnienie się, że widoczne jest menu treningowe na starcie
     document.getElementById('trening-menu').style.display = 'block';
