@@ -11,7 +11,7 @@ class UIManager {
             startQuizButton: document.getElementById('start-quiz-button'),
             // Elementy z index.html (Egzamin)
             resultsButtonsPlaceholder: document.getElementById('results-buttons-placeholder'), 
-            examResultsContent: document.getElementById('exam-results-content'), // NOWY KONTENER TREŚCI DLA EGZAMINU
+            examResultsContent: document.getElementById('exam-results-content'), 
             timerDisplay: document.getElementById('timer-display'), 
             // Elementy z trening.html (Trening)
             treningMenu: document.getElementById('trening-menu'),
@@ -62,7 +62,7 @@ class UIManager {
 
 
 // ----------------------------------------------------------------------
-// ZARZĄDZANIE WIDOKAMI I RENDEROWANIE TREŚCI
+// ZARZĄDZANIE WIDOKAMI I RENDEROWANIEM TREŚCI
 // ----------------------------------------------------------------------
 
     _hideAllViews() {
@@ -87,6 +87,11 @@ class UIManager {
     }
     
     goToNext(quizManager) {
+        // KLUCZOWA POPRAWKA MOBILNA: Usuwamy focus z ostatnio klikniętego elementu
+        if (document.activeElement) {
+            document.activeElement.blur(); 
+        }
+        
         if (quizManager.isQuizFinished()) {
             quizManager.stopTimer(); 
             
@@ -154,11 +159,10 @@ class UIManager {
                 <p>Procent poprawnych odpowiedzi: ${percentage}%</p>
             `;
             
-            // KLUCZOWA POPRAWKA EGZAMINU: Wstawienie do nowego kontenera
+            // Wstawienie do nowego kontenera treści egzaminu
             if (this.dom.examResultsContent) {
                  this.dom.examResultsContent.innerHTML = resultsHTML;
             } else if (this.dom.resultsScreen) {
-                 // Fallback w przypadku, gdy brakuje #exam-results-content
                  this.dom.resultsScreen.innerHTML = resultsHTML;
             }
 
@@ -168,7 +172,7 @@ class UIManager {
                 <p id="trening-stats">Twój wynik w tym zakresie: ${finalScore} / ${totalQuestions}</p>
                 <p>Procent poprawnych odpowiedzi: ${percentage}%</p>
             `;
-            // KLUCZOWA POPRAWKA TRENINGU: Wstawienie do nowego kontenera
+            // Wstawienie do nowego kontenera treści treningu
             const contentContainer = document.getElementById('trening-results-content');
             if (contentContainer) contentContainer.innerHTML = resultsHTML;
         }
@@ -177,7 +181,7 @@ class UIManager {
         if (mode === 'exam' && this.dom.resultsButtonsPlaceholder) {
             // Przyciski dla Egzaminu Próbnego
             this.dom.resultsButtonsPlaceholder.innerHTML = `
-                <button id="restart-quiz-btn">Spróbuj ponownie</button>
+                <button id="restart-quiz-btn">Ponownie rozwiąż test (Nowy zakres pytań)</button>
                 <button id="go-to-main-menu-btn">Wróć do menu głównego</button>
             `;
             
@@ -223,8 +227,6 @@ class UIManager {
                 treningButtonsContainer.style.display = 'flex';
             }
         }
-        
-        // Brak dodatkowych, konfliktujących linii kodu na końcu metody.
     }
 
 
