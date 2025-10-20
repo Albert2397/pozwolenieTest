@@ -199,39 +199,35 @@ button:hover:not(:disabled), a button:hover, a.button-link:hover {
 }
 
 /* ====================================
-   7. STYLIZACJA EKRANÓW WYNIKÓW (NOWA SEKCJA)
+   7. STYLIZACJA EKRANÓW WYNIKÓW (NAPRAWIONA)
    ==================================== */
-
-/* Centralne ustawienia dla ekranu wyników */
 #results-screen {
-    /* Nadpisanie domyślnego text-align: center; jeśli było potrzebne,
-       aby wyśrodkować blok tekstu i przycisków */
+    /* Upewnienie się, że kontener wyników jest wyśrodkowany i zorientowany pionowo */
     display: flex;
     flex-direction: column;
-    align-items: center; /* Wyśrodkowanie elementów w pionie */
+    align-items: center; 
     justify-content: center;
 }
 
 #results-screen h2, #results-screen p {
-    color: white; /* Tekst wyników jest biały, zgodnie z czarnym tłem kontenera */
+    color: white; /* Upewnienie się, że tekst jest widoczny na czarnym tle kontenera */
     margin-bottom: 10px;
 }
 
 /* Styl dla kontenerów przechowujących nowe przyciski (Egzamin i Trening) */
 #results-buttons-placeholder, 
 #trening-results-buttons {
-    margin-top: 30px; /* Odstęp od statystyk */
-    width: 100%; /* Kontener zajmuje całą dostępną szerokość */
+    margin-top: 30px; 
+    width: 100%; 
     display: flex;
     flex-direction: column; /* Układanie przycisków jeden pod drugim */
-    gap: 15px; /* Odstęp między przyciskami */
+    gap: 15px; 
 }
 
 /* Upewnienie się, że przyciski restartu/powrotu używają ogólnego stylu z sekcji 4 */
 #results-buttons-placeholder button,
 #trening-results-buttons button {
-    /* Używamy stylów z sekcji 4. W razie potrzeby można tu dodać dodatkowe marginesy. */
-    margin-bottom: 0; /* Zerujemy domyślny margines z sekcji 4 */
+    margin-bottom: 0; /* Zerujemy domyślny margines z sekcji 4, bo używamy 'gap' */
 }
 
 /* Dla większych ekranów, aby przyciski nie były za szerokie */
@@ -239,5 +235,29 @@ button:hover:not(:disabled), a button:hover, a.button-link:hover {
     #results-buttons-placeholder,
     #trening-results-buttons {
         max-width: 350px;
+    }
+}
+
+/* ====================================
+   8. KOREKTA DLA URZĄDZEŃ MOBILNYCH (PROBLEM Z HOVEREM)
+   ==================================== */
+
+/* Używamy reguły media query, aby wyłączyć lub stonować stan :hover na urządzeniach dotykowych, 
+   gdzie "tapnięcie" często powoduje trwały stan najechania. */
+@media (hover: none) {
+    
+    /* Przyciski odpowiedzi: przywracamy normalny stan w :hover */
+    .answer-button:hover {
+        background-color: #f8f9fa !important; 
+        color: #333 !important;
+        transform: none; 
+    }
+    
+    /* Ogólne przyciski (w menu, restartu): stonowanie efektu hover */
+    button:hover:not(:disabled), 
+    a button:hover, 
+    a.button-link:hover {
+        background-color: #059669; /* Wracamy do normalnego tła */
+        transform: none; /* Wyłączamy transformację */
     }
 }
