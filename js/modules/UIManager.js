@@ -9,8 +9,12 @@ class UIManager {
             scoreDisplay: document.getElementById('score-display'),
             resultsScreen: document.getElementById('results-screen'),
             startQuizButton: document.getElementById('start-quiz-button'),
-            restartButtonPlaceholder: document.getElementById('restart-button-placeholder'), 
+            // Elementy z index.html (Egzamin)
+            resultsButtonsPlaceholder: document.getElementById('results-buttons-placeholder'), 
+            examResultsContent: document.getElementById('exam-results-content'), // NOWY KONTENER TREŚCI DLA EGZAMINU
             timerDisplay: document.getElementById('timer-display'), 
+            // Elementy z trening.html (Trening)
+            treningMenu: document.getElementById('trening-menu'),
         };
         
         // Definicje klas CSS
@@ -41,10 +45,20 @@ class UIManager {
             });
         }
         
-        if (this.dom.restartButtonPlaceholder) {
-            this.dom.restartButtonPlaceholder.addEventListener('click', (event) => {
-                if (event.target.id === 'restart-button') {
-                    window.location.href = 'index.html'; 
+        // DODANIE OBSŁUGI PRZYCISKU PRZERWIJ EGZAMIN
+        const przerwijEgzaminBtn = document.getElementById('przerwij-egzamin-btn');
+
+        if (przerwijEgzaminBtn) {
+            przerwijEgzaminBtn.addEventListener('click', () => {
+                if (confirm("Czy na pewno chcesz przerwać egzamin i zobaczyć dotychczasowe wyniki?")) {
+                    quizManager.przerwijEgzamin(); // Zatrzymuje timer i ustawia koniec
+                    this.showResults(
+                        quizManager.score, 
+                        quizManager.quizQuestions.length, 
+                        quizManager, 
+                        'exam', 
+                        'przerwany' // Nowy status
+                    );
                 }
             });
         }
@@ -66,15 +80,18 @@ class UIManager {
 
 
 // ----------------------------------------------------------------------
-// ZARZĄDZANIE WIDOKAMI I RENDEROWANIE TREŚCI
+// ZARZĄDZANIE WIDOKAMI I RENDEROWANIEM TREŚCI
 // ----------------------------------------------------------------------
 
     _hideAllViews() {
          [this.dom.menu, this.dom.quizContainer, this.dom.resultsScreen].forEach(el => {
              if (el) el.style.display = 'none';
          });
-         const treningMenu = document.getElementById('trening-menu');
-         if (treningMenu) treningMenu.style.display = 'none';
+         // Ukrycie menu treningowego i placeholderów
+         if (this.dom.treningMenu) this.dom.treningMenu.style.display = 'none';
+         if (this.dom.resultsButtonsPlaceholder) this.dom.resultsButtonsPlaceholder.style.display = 'none';
+         const treningButtons = document.getElementById('trening-results-buttons');
+         if (treningButtons) treningButtons.style.display = 'none';
     }
     
     showMenu() {
@@ -88,9 +105,18 @@ class UIManager {
     }
     
     goToNext(quizManager) {
+        // KLUCZOWA POPRAWKA MOBILNA: Usuwamy focus z ostatnio klikniętego elementu
+        if (document.activeElement) {
+            document.activeElement.blur(); 
+        }
+        
         if (quizManager.isQuizFinished()) {
             quizManager.stopTimer(); 
-            this.showResults(quizManager.score, quizManager.quizQuestions.length);
+            
+            // Określenie trybu
+            const mode = document.getElementById('trening-menu') ? 'trening' : 'exam';
+            
+            this.showResults(quizManager.score, quizManager.quizQuestions.length, quizManager, mode); 
         } else {
             const nextQuestion = quizManager.getCurrentQuestion();
             this.renderQuestion(nextQuestion, quizManager.currentQuestionIndex, quizManager.quizQuestions.length);
@@ -125,7 +151,7 @@ class UIManager {
         }
     }
     
-    showResults(finalScore, totalQuestions, reason = 'finished') {
+    showResults(finalScore, totalQuestions, quizManager, mode = 'exam', reason = 'finished') {
         this._hideAllViews();
         if (this.dom.resultsScreen) this.dom.resultsScreen.style.display = 'block';
         
@@ -134,26 +160,92 @@ class UIManager {
         let headerText = "Koniec Egzaminu";
         if (reason === 'expired') {
             headerText = "⏰ Czas minął! ⏰"; 
+        } else if (reason === 'przerwany') { // Nowy nagłówek dla przerwanych egzaminów
+            headerText = "Egzamin Przerwany";
         }
 
-        // LOGIKA ZDANIA/NIEZDANIA
-        const isPassed = percentage >= 80;
-        const passFailText = isPassed ? "Egzamin Zdany! 🎉" : "Egzamin niezdany! ❌";
-        const passFailClass = isPassed ? 'result-passed' : 'result-failed';
+        let resultsHTML = '';
         
-        if (this.dom.resultsScreen) {
-            this.dom.resultsScreen.innerHTML = `
+        // --- Generowanie treści wyników ---
+        if (mode === 'exam') {
+            const isPassed = percentage >= 90;
+            const passFailText = isPassed ? "Egzamin Zdany! 🎉" : "Egzamin niezdany! ❌";
+            const passFailClass = isPassed ? 'result-passed' : 'result-failed';
+            
+            resultsHTML = `
                 <h2>${headerText}</h2>
-                
                 <h3 class="${passFailClass}">${passFailText}</h3>
-                
-                <p>Twój wynik: ${finalScore} / ${totalQuestions}</p>
+                <p id="final-score">Twój wynik: ${finalScore} / ${totalQuestions}</p>
                 <p>Procent poprawnych odpowiedzi: ${percentage}%</p>
             `;
+            
+            // Wstawienie do nowego kontenera treści egzaminu
+            if (this.dom.examResultsContent) {
+                 this.dom.examResultsContent.innerHTML = resultsHTML;
+            } else if (this.dom.resultsScreen) {
+                 this.dom.resultsScreen.innerHTML = resultsHTML;
+            }
+
+        } else if (mode === 'trening') {
+             resultsHTML = `
+                <h2>Zakres Treningowy Zakończony!</h2>
+                <p id="trening-stats">Twój wynik w tym zakresie: ${finalScore} / ${totalQuestions}</p>
+                <p>Procent poprawnych odpowiedzi: ${percentage}%</p>
+            `;
+            // Wstawienie do nowego kontenera treści treningu
+            const contentContainer = document.getElementById('trening-results-content');
+            if (contentContainer) contentContainer.innerHTML = resultsHTML;
         }
         
-        if (this.dom.restartButtonPlaceholder) {
-            this.dom.restartButtonPlaceholder.innerHTML = '<button id="restart-button">Spróbuj ponownie</button>';
+        // --- Warunkowa obsługa przycisków ---
+        if (mode === 'exam' && this.dom.resultsButtonsPlaceholder) {
+            // Przyciski dla Egzaminu Próbnego
+            this.dom.resultsButtonsPlaceholder.innerHTML = `
+                <button id="restart-quiz-btn">Spróbuj ponownie</button>
+                <button id="go-to-main-menu-btn">Wróć do menu głównego</button>
+            `;
+            
+            // Logika restartu Egzaminu
+            document.getElementById('restart-quiz-btn').addEventListener('click', () => {
+                quizManager.resetQuiz(); 
+                quizManager.startQuiz('exam'); 
+                this.showQuiz();
+                this.goToNext(quizManager); 
+            });
+
+            // Logika powrotu do menu głównego (index.html)
+            document.getElementById('go-to-main-menu-btn').addEventListener('click', () => {
+                this.showMenu(); 
+            });
+            
+            this.dom.resultsButtonsPlaceholder.style.display = 'flex';
+            
+        } else if (mode === 'trening') {
+            
+            // DYNAMICZNE POBRANIE ELEMENTU DLA TRENINGU
+            const treningButtonsContainer = document.getElementById('trening-results-buttons');
+
+            if (treningButtonsContainer) { 
+                // Przyciski dla Trybu Treningowego
+                treningButtonsContainer.innerHTML = `
+                    <button id="select-new-range-btn">Wybierz kolejny zakres pytań</button>
+                    <button id="go-to-main-menu-trening-btn">Wróć do menu głównego</button>
+                `;
+                
+                // Logika powrotu do wyboru zakresu
+                document.getElementById('select-new-range-btn').addEventListener('click', () => {
+                    this._hideAllViews();
+                    if (this.dom.treningMenu) this.dom.treningMenu.style.display = 'block'; // Powrót do #trening-menu
+                });
+    
+                // Logika powrotu do menu głównego (index.html)
+                document.getElementById('go-to-main-menu-trening-btn').addEventListener('click', () => {
+                    window.location.href = 'index.html'; 
+                });
+                
+                // USTAWIENIE WIDOCZNOŚCI:
+                treningButtonsContainer.style.display = 'flex';
+            }
         }
     }
 
@@ -161,7 +253,6 @@ class UIManager {
 // ----------------------------------------------------------------------
 // LOGIKA TIMERA UI
 // ----------------------------------------------------------------------
-
     formatTime(totalSeconds) {
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
@@ -178,7 +269,6 @@ class UIManager {
 // ----------------------------------------------------------------------
 // WIZUALNE INFORMACJE ZWROTNE I STANY PRZYCISKÓW
 // ----------------------------------------------------------------------
-
     highlightAnswer(selectedKey, isCorrect, correctKey) {
         const selectedButton = document.querySelector(`.${this.ANSWER_CLASSES.BUTTON}[data-key="${selectedKey}"]`);
         if (selectedButton) {
