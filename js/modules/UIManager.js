@@ -168,7 +168,7 @@ class UIManager {
         
         // --- Generowanie treści wyników ---
         if (mode === 'exam') {
-            const isPassed = percentage >= 80;
+            const isPassed = percentage >= 90;
             const passFailText = isPassed ? "Egzamin Zdany! 🎉" : "Egzamin niezdany! ❌";
             const passFailClass = isPassed ? 'result-passed' : 'result-failed';
             
